@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 import requests
 import urlparse
 
+from imageGetter import get_imgsList
+
 ###
 # Routing for your application.
 ###
@@ -19,6 +21,27 @@ import urlparse
 def home():
     """Render website's home page."""
     return render_template('home.html')
+
+
+@app.route('/api/thumbnails', methods=['GET'])
+def get_thumbnails():
+    url = "https://www.amazon.com/dp/B019U00D7K"
+    links = get_imgsList(url)
+    
+    if links:
+        xxx = None
+        statusMsg = "Success"
+    else:
+        xxx = "Error in Request"
+        statusMsg = "Fail"
+    
+    return jsonify(error=xxx, message=statusMsg, thumbnails=links)
+
+
+@app.route('/thumbnails/view')
+def view_thumbnails():
+    """Renders an AngularJS webpage that displays the list of thumbnails retrieved"""
+    return render_template('thumbnails.html')
 
 
 ###
